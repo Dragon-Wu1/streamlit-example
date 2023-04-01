@@ -5,8 +5,8 @@ import pandas as pd
 from PIL import Image
 import smtplib
 import email.message
-import pymysql
-
+#import pymysql
+import mysql.connector
 
 def send_email(*email_list):
     for i in email_list:
@@ -136,10 +136,9 @@ def main():
 
 
 if __name__ == '__main__':
-    db = pymysql.connect(host='127.0.0.1', user='root', passwd='a098765', port=3306, db='course_management')
+    db = mysql.connector.connect(host="127.0.0.1",user="root",passwd="a098765",database="course_management")    
     cursor = db.cursor()
     main()
-
     #st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
     #    .mark_circle(color='#0068c9', opacity=0.5)
     #    .encode(x='x:Q', y='y:Q'))
