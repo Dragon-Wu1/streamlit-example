@@ -1,7 +1,8 @@
 altair
 pandas
 streamlit
-smtplib
+#smtplib
+PyEmail
 time
 numpy
 pymysql
