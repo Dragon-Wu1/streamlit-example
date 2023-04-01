@@ -8,6 +8,10 @@ import email.message
 #import pymysql
 import mysql.connector
 
+def init_connection():
+    return mysql.connector.connect(**st.secrets["mysql"])
+
+
 def send_email(*email_list):
     for i in email_list:
         msg = email.message.EmailMessage()
@@ -24,7 +28,7 @@ def send_email(*email_list):
         server.send_message(msg)
         server.close()
 
-
+        
 def query(cursor):
     sql = 'Select course_id,course_name , status, email from course M Join instructors F On M.course_name = F.course;'
     cursor.execute(sql)
@@ -136,7 +140,7 @@ def main():
 
 
 if __name__ == '__main__':
-    db = mysql.connector.connect(**st.secrets["mysql"])    
+    db = init_connection() 
     cursor = db.cursor()
     main()
     #st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
