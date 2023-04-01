@@ -136,7 +136,7 @@ def main():
 
 
 if __name__ == '__main__':
-    db = mysql.connector.connect(host="127.0.0.1",user="root",passwd="a098765",database="course_management")    
+    db = mysql.connector.connect(**st.secrets["mysql"])    
     cursor = db.cursor()
     main()
     #st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
