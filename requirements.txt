@@ -6,4 +6,3 @@ PyEmail
 numpy
 pymysql
 mysql-connector-python
-toml
