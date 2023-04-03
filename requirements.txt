@@ -4,5 +4,3 @@ pandas
 sqlalchemy
 scikit-learn
 pymysql
-pyodbc
-msodbcsql17
