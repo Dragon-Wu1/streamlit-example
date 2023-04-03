@@ -11,10 +11,9 @@ def init_connection():
 
 @st.cache(allow_output_mutation=True)
 def get_connection():
-    return create_engine("mssql+pyodbc://username:a098765@localhost/course_management?driver=ODBC+Driver+17+for+SQL+Server", 
+    return create_engine("mssql+pyodbc://username:passowrd@DB_server/database?driver=ODBC+Driver+17+for+SQL+Server", 
     fast_executemany = True
     )
-
 # Perform query.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
 @st.cache_data(ttl=600)
