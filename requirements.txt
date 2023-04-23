@@ -3,4 +3,4 @@ numpy
 pandas
 sqlalchemy
 scikit-learn
-pymysql
+psycopg2-binary
