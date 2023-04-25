@@ -60,13 +60,13 @@ def show_logout_page():
 
 
 def LoggedIn_Clicked(userName, password):
-    time.sleep(3)
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select password from instructors Where name = '%s';" % (userName)
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
+    st.write(password)
     st.write(df2[0])
     if df2 is not None and df2[0] == password:
         st.session_state['loggedIn'] = True
