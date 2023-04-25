@@ -25,8 +25,10 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
                                                                                                             obj, cov,
                                                                                                             obo, csn)
     cursor.execute(sql)
+    conn.commit()
     st.write("input successfully")
-    
+
+
 def show_main_page():
     with mainSection:
         st.title('FST')
@@ -44,36 +46,41 @@ def show_main_page():
         Sub_Mit = st.button("Submit Input")
         if Sub_Mit:
             inputdata(catalog_description, prerequisites, Textbook, References, Major_prerequisites_by_topic, Course_objectives, Topics_covered, objectives_and_outcomes, course_code)
-            
+
+
 def LoggedOut_Clicked():
     st.session_state['loggedIn'] = False
 
-    
+
 def show_logout_page():
     loginSection.empty()
     with logOutSection:
         st.button("Log Out", key="logout", on_click=LoggedOut_Clicked)
-        
+
+
 def LoggedIn_Clicked(userName, password):
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select password from instructors Where name = '%s';" % (userName)
     cursor.execute(sql)
+    conn.commit()
     df2 = cursor.fetchone()
     if df2 is not None and df2[0] == password:
         st.session_state['loggedIn'] = True
     else:
         st.session_state['loggedIn'] = False
         st.error("Invalid user name or password")
-        
-   def show_login_page():
+
+
+def show_login_page():
     with loginSection:
         if st.session_state['loggedIn'] == False:
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
             password = st.text_input(label="", value="", placeholder="Enter password", type="password")
             st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
-            
-   with headerSection:
+
+
+with headerSection:
     st.title("User")
     if 'loggedIn' not in st.session_state:
         st.session_state['loggedIn'] = False
