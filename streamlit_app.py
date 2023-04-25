@@ -60,6 +60,7 @@ def show_logout_page():
 
 
 def LoggedIn_Clicked(userName, password):
+    time.sleep(3)
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select password from instructors Where name = '%s';" % (userName)
@@ -78,8 +79,7 @@ def show_login_page():
         if st.session_state['loggedIn'] == False:
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
             password = st.text_input(label="", value="", placeholder="Enter password", type="password")
-            st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
-            time.sleep(3)
+            st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))            
 
 
 with headerSection:
