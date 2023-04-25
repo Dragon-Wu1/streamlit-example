@@ -66,7 +66,9 @@ def LoggedIn_Clicked(userName, password):
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
+    st.write(password)
     st.write(type(password))
+    st.write(df2[0])
     st.write(type(df2[0]))
     if df2 is not None and df2[0] == password:
         st.session_state['loggedIn'] = True
