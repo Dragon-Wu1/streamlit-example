@@ -1,6 +1,7 @@
 import streamlit as st
 import snowflake.connector
 from PIL import Image
+import time
 
 headerSection = st.container()
 mainSection = st.container()
@@ -78,6 +79,7 @@ def show_login_page():
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
             password = st.text_input(label="", value="", placeholder="Enter password", type="password")
             st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
+            time.sleep(3)
 
 
 with headerSection:
