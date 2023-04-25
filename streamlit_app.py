@@ -68,7 +68,7 @@ def LoggedIn_Clicked(userName, password):
     df2 = cursor.fetchone()
     st.write(password)
     st.write(df2[0])
-    if df2 is not None and df2[0] == password:
+    if df2[0] == password:
         st.session_state['loggedIn'] = True
     else:
         st.session_state['loggedIn'] = False
