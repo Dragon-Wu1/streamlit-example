@@ -15,16 +15,16 @@ def init_connection():
     )
 
 
-def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
+def inputdata(csn, des, pre, tex, ref, maj, obj, cov, obo, ine):
     conn = init_connection()
     cursor = conn.cursor()
-    sql = "UPDATE course SET description = '%s', prerequisites = '%s', textbook = '%s', reference = '%s', major_pre = " \
-          "'%s', objectives = '%s', covered = '%s', objectives_outcomes = '%s' WHERE course_name = '%s'" % (des,
+    sql = "UPDATE course SET course_name='%s', description = '%s', prerequisites = '%s', textbook = '%s', reference = '%s', major_pre = " \
+          "'%s', objectives = '%s', covered = '%s', objectives_outcomes = '%s' WHERE id_name = '%s'" % (csn,des,
                                                                                                             pre,
                                                                                                             tex,
                                                                                                             ref, maj,
                                                                                                             obj, cov,
-                                                                                                            obo, csn)
+                                                                                                            obo, ine)
     cursor.execute(sql)
     conn.commit()
     st.write("input successfully")
@@ -36,6 +36,7 @@ def show_main_page():
         image = Image.open('UM_logo.jpg')
         st.image(image)
         course_code = st.text_input("Course Code")
+        course_name = st.text_input("Course Name")
         catalog_description = st.text_input("Catalog Description")
         prerequisites = st.text_input("Prerequisites")
         Textbook = st.text_input("Textbook(s) and other required materia")
@@ -46,7 +47,7 @@ def show_main_page():
         objectives_and_outcomes = st.text_input("Relationship to CEE, EEE and EME program objectives and outcomes")
         Sub_Mit = st.button("Submit Input")
         if Sub_Mit:
-            inputdata(catalog_description, prerequisites, Textbook, References, Major_prerequisites_by_topic, Course_objectives, Topics_covered, objectives_and_outcomes, course_code)
+            inputdata(course_name,catalog_description, prerequisites, Textbook, References, Major_prerequisites_by_topic, Course_objectives, Topics_covered, objectives_and_outcomes, course_code)
 
 
 def LoggedOut_Clicked():
