@@ -346,8 +346,8 @@ def show_main_page():
             st.table(df2)
         with right_column:
             st.write('modify')
-            st.write('df2')
-            st.write('type(df2)')
+            st.write(df2)
+            st.write(type(df2))
             for i, j in zip(df2.course, df2.status):    #i is string
                 i = st.button(j, key=i, on_click=main_click, args=i)
         add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']
