@@ -341,8 +341,8 @@ def show_main_page():
         image = Image.open('UM_logo.jpg')
         st.image(image)
         df2 = Read()   #return is tuples
-        dfcourse = df2.course
-        dfstatus = df2.status
+        dfcourse = df2.COURSE
+        dfstatus = df2.STATUS
         st.write(dfcourse)
         st.write(dfstatus)
         left_column, right_column = st.columns([2, 2])
