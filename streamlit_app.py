@@ -125,7 +125,7 @@ def Read():
         name)
     cursor.execute(sql)
     conn.commit()
-    df2 = pd.read_sql(sql, con=db)  #it read the result as a dataframe very important
+    df2 = pd.read_sql(sql, con=conn)  #it read the result as a dataframe very important
     return df2
 
 
