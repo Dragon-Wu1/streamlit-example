@@ -341,16 +341,12 @@ def show_main_page():
         image = Image.open('UM_logo.jpg')
         st.image(image)
         df2 = Read()   #return is tuples
-        dfcourse = df2.COURSE
-        dfstatus = df2.STATUS
-        st.write(dfcourse)
-        st.write(dfstatus)
         left_column, right_column = st.columns([2, 2])
         with left_column:
             st.table(df2)
         with right_column:
             st.write('modify')
-            for i, j in zip(df2.course, df2.status):    #i is string
+            for i, j in zip(df2.COURSE, df2.STATUS):    #i is string
                 i = st.button(j, key=i, on_click=main_click, args=i)
         add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']
         show_logout_page()
