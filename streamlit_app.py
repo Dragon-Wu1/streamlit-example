@@ -1,6 +1,7 @@
 import streamlit as st
-import pymysql
+import snowflake.connector
 from PIL import Image
+import time
 import pandas as pd
 import time
 headerSection = st.container()
