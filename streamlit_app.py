@@ -96,7 +96,6 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
         back_save = st.button("Back", key='back_save')
     with right_column:
         confirm = st.button('Confirm')
-
     if confirm:
         sql1 = "UPDATE course SET status = 'Confirmed' WHERE id_name = '%s'" % (csn)
         cursor.execute(sql1)
@@ -104,6 +103,7 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
         st.success("Modifying is successfully")
     if back_save:
         st.session_state['Fill'] = True
+    show_logout_page()
 
 
 def loading(code):
