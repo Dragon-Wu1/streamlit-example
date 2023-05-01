@@ -103,7 +103,7 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
         st.success("Modifying is successfully")
     if back_save:
         st.session_state['Fill'] = True
-    show_logout_page()
+
 
 
 def loading(code):
