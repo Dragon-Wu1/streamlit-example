@@ -340,18 +340,19 @@ def show_login_page():
 
 def show_main_page():
     with mainSection:
-        st.title('FST')
-        image = Image.open('UM_logo.jpg')
-        st.image(image)
+        st.title('Please select the course to modify')
         df2 = Read()   #return is tuples
-        left_column, right_column = st.columns([3, 1])
-        with left_column:
-            st.table(df2)
-        with right_column:
-            st.write('Option')
-            for i, j in zip(df2.COURSE, df2.STATUS):    #i is string
-                i = st.button(j, key=i, on_click=main_click, args=i)
-        add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']
+        #left_column, right_column = st.columns([3, 1])
+        st.table(df2)
+        #with left_column:
+            #st.table(df2)
+        #with right_column:
+            #st.write('Option')
+            #for i, j in zip(df2.COURSE, df2.STATUS):    #i is string
+                #i = st.button(j, key=i, on_click=main_click, args=i)
+        select_course=st.selectbox('Select the course to modify',df2.COURSE)
+        i = st.button('Modify', key=i, on_click=main_click, args=select_course)
+        add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']    
         show_logout_page()
 
 
