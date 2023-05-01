@@ -55,14 +55,14 @@ def add_data(des, pre, tex, ref, maj, obj, cov, obo, csn, cona, courde):
     with left_column:
         add_back = st.button("Back", key='add_back')
     with right_column:
-        add_confirm = st.button('confirm', key='add_confirm')
+        add_confirm = st.button('Confirm', key='add_confirm')
     if add_confirm:
         sql1 = "INSERT INTO INSTRUCTORS (name, course, password, email) values ('%s', '%s', '%s', '%s')" % (use, csn, passw, email)
         cursor.execute(sql1)
         sql2 = "insert into course (id_name, course_name, course_dept, description, prerequisites, textbook, reference, major_pre, objectives, covered, objectives_outcomes) values ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (csn, cona, courde, des, pre, tex, ref, maj, obj, cov, obo)
         cursor.execute(sql2)
         conn.commit()
-        st.write("Adding is successfully")
+        st.success("Adding is successfully")
     if add_back:
         st.session_state['ADD'] = True
 
@@ -101,7 +101,7 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
         sql1 = "UPDATE course SET status = 'Confirmed' WHERE id_name = '%s'" % (csn)
         cursor.execute(sql1)
         conn.commit()
-        st.write("Modifying is successfully")
+        st.success("Modifying is successfully")
     if back_save:
         st.session_state['Fill'] = True
 
