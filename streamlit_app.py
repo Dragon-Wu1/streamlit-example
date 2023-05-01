@@ -51,15 +51,18 @@ def add_data(des, pre, tex, ref, maj, obj, cov, obo, csn, cona, courde):
         """)
     conn = init_connection()
     cursor = conn.cursor()
-    add_back = st.button("Back", key='add_back')
-    add_confirm = st.button('confirm', key='add_confirm')
+    left_column, right_column = st.columns([3, 1])   
+    with left_column:
+        add_back = st.button("Back", key='add_back')
+    with right_column:
+        add_confirm = st.button('confirm', key='add_confirm')
     if add_confirm:
         sql1 = "INSERT INTO INSTRUCTORS (name, course, password, email) values ('%s', '%s', '%s', '%s')" % (use, csn, passw, email)
         cursor.execute(sql1)
         sql2 = "insert into course (id_name, course_name, course_dept, description, prerequisites, textbook, reference, major_pre, objectives, covered, objectives_outcomes) values ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (csn, cona, courde, des, pre, tex, ref, maj, obj, cov, obo)
         cursor.execute(sql2)
         conn.commit()
-        st.write("input successfully")
+        st.write("Adding is successfully")
     if add_back:
         st.session_state['ADD'] = True
 
@@ -88,14 +91,17 @@ def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
                                                                                                             obo, csn)
     cursor.execute(sql)
     conn.commit()
-    back_save = st.button("Back", key='back_save')
-    confirm = st.button('confirm')
+    left_column, right_column = st.columns([3, 1])   
+    with left_column:
+        back_save = st.button("Back", key='back_save')
+    with right_column:
+        confirm = st.button('Confirm')
 
     if confirm:
         sql1 = "UPDATE course SET status = 'Confirmed' WHERE id_name = '%s'" % (csn)
         cursor.execute(sql1)
         conn.commit()
-        st.write("input successfully")
+        st.write("Modifying is successfully")
     if back_save:
         st.session_state['Fill'] = True
 
@@ -303,9 +309,7 @@ def Fill_click(des, pre, tex, ref, maj, obj, cov, obo, csn):
 def show_Add_page():
     if st.session_state['main'] == False and st.session_state['ADD'] == True and st.session_state['Choose'] == False:
         with AddSection:
-            st.title('FST')
-            image = Image.open('UM_logo.jpg')
-            st.image(image)
+            st.title('Filled the information in below.')
             course_code = st.text_input("Course Code")
             course_name = st.text_input("Course Name")
             course_dept = st.text_input("Course Department")
@@ -319,9 +323,9 @@ def show_Add_page():
             objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
             left_column, right_column = st.columns([3, 1])
             with left_column:
-                submit = st.button("Save", key='add_submit')
-            with right_column:
                 turn_back = st.button("Back", key='turn_back')
+            with right_column:
+                submit = st.button("Save", key='add_submit')                
             if submit:
                 Add_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,
                            course_objectives, topics_covered, objectives_and_outcomes, course_code, course_name, course_dept)
@@ -359,9 +363,7 @@ def show_main_page():
 def show_Fill_page():
     if st.session_state['main'] == False and st.session_state['Fill'] == True and st.session_state['Choose'] == True:
         with FillSection:
-            st.title('FST')
-            image = Image.open('UM_logo.jpg')
-            st.image(image)
+            st.title('Filled the information in below.')
             course_code = st.session_state['name']
             df = loading(course_code)
             #st.write(df[0])
@@ -409,9 +411,9 @@ def show_Fill_page():
                 objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
             left_column, right_column = st.columns([3, 1])
             with left_column:
-                sub_mit = st.button("Save")
-            with right_column:
                 back = st.button("Back")
+            with right_column:
+                sub_mit = st.button("Save")
             if sub_mit:
                 Fill_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,course_objectives, topics_covered, objectives_and_outcomes, course_code)
             if back:
