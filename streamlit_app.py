@@ -309,16 +309,19 @@ def show_Add_page():
             course_code = st.text_input("Course Code")
             course_name = st.text_input("Course Name")
             course_dept = st.text_input("Course Department")
-            catalog_description = st.text_input("Catalog Description")
-            prerequisites = st.text_input("Prerequisites")
-            textbook = st.text_input("Textbook(s) and other required materia")
-            references = st.text_input("References")
-            major_prerequisites_by_topic = st.text_input("Major prerequisites by topic")
-            course_objectives = st.text_input("Course objectives")
-            topics_covered = st.text_input("Topics covered")
-            objectives_and_outcomes = st.text_input("Relationship to CEE, EEE and EME program objectives and outcomes")
-            submit = st.button("Save", key='add_submit')
-            turn_back = st.button("Back", key='turn_back')
+            catalog_description = st.text_area("Catalog Description")
+            prerequisites = st.text_area("Prerequisites")
+            textbook = st.text_area("Textbook(s) and other required materia")
+            references = st.text_area("References")
+            major_prerequisites_by_topic = st.text_area("Major prerequisites by topic")
+            course_objectives = st.text_area("Course objectives")
+            topics_covered = st.text_area("Topics covered")
+            objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
+            left_column, right_column = st.columns([3, 1])
+            with left_column:
+                submit = st.button("Save", key='add_submit')
+            with right_column:
+                turn_back = st.button("Back", key='turn_back')
             if submit:
                 Add_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,
                            course_objectives, topics_covered, objectives_and_outcomes, course_code, course_name, course_dept)
@@ -341,11 +344,11 @@ def show_main_page():
         image = Image.open('UM_logo.jpg')
         st.image(image)
         df2 = Read()   #return is tuples
-        left_column, right_column = st.columns([2, 2])
+        left_column, right_column = st.columns([3, 1])
         with left_column:
             st.table(df2)
         with right_column:
-            st.write('modify')
+            st.write('Option')
             for i, j in zip(df2.COURSE, df2.STATUS):    #i is string
                 i = st.button(j, key=i, on_click=main_click, args=i)
         add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']
@@ -365,47 +368,49 @@ def show_Fill_page():
             #st.write(df1[0])
             #st.write(df1[1])
             if df1[4] != None:
-                catalog_description = st.text_input("Catalog Description", df1[4])
+                catalog_description = st.text_area("Catalog Description", df1[4])
             else:
-                catalog_description = st.text_input("Catalog Description")
+                catalog_description = st.text_area("Catalog Description")
 
             if df1[5] != None:
-                prerequisites = st.text_input("Prerequisites", df1[5])
+                prerequisites = st.text_area("Prerequisites", df1[5])
             else:
-                prerequisites = st.text_input("Prerequisites")
+                prerequisites = st.text_area("Prerequisites")
 
             if df1[6] != None:
-                textbook = st.text_input("Textbook(s) and other required materia", df1[6])
+                textbook = st.text_area("Textbook(s) and other required materia", df1[6])
             else:
-                textbook = st.text_input("Textbook(s) and other required materia")
+                textbook = st.text_area("Textbook(s) and other required materia")
 
             if df1[7] != None:
-                references = st.text_input("References", df1[7])
+                references = st.text_area("References", df1[7])
             else:
-                references = st.text_input("References")
+                references = st.text_area("References")
 
             if df1[8] != None:
-                major_prerequisites_by_topic = st.text_input("Major prerequisites by topic", df1[8])
+                major_prerequisites_by_topic = st.text_area("Major prerequisites by topic", df1[8])
             else:
-                major_prerequisites_by_topic = st.text_input("Major prerequisites by topic")
+                major_prerequisites_by_topic = st.text_area("Major prerequisites by topic")
 
             if df1[9] != None:
-                course_objectives = st.text_input("Course objectives", df1[9])
+                course_objectives = st.text_area("Course objectives", df1[9])
             else:
-                course_objectives = st.text_input("Course objectives")
+                course_objectives = st.text_area("Course objectives")
 
             if df1[10] != None:
-                topics_covered = st.text_input("Topics covered", df1[10])
+                topics_covered = st.text_area("Topics covered", df1[10])
             else:
-                topics_covered = st.text_input("Topics covered")
+                topics_covered = st.text_area("Topics covered")
 
             if df1[11] != None:
-                objectives_and_outcomes = st.text_input("Relationship to CEE, EEE and EME program objectives and outcomes", df1[11])
+                objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes", df1[11])
             else:
-                objectives_and_outcomes = st.text_input("Relationship to CEE, EEE and EME program objectives and outcomes")
-
-            sub_mit = st.button("Save")
-            back = st.button("Back")
+                objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
+            left_column, right_column = st.columns([3, 1])
+            with left_column:
+                sub_mit = st.button("Save")
+            with right_column:
+                back = st.button("Back")
             if sub_mit:
                 Fill_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,course_objectives, topics_covered, objectives_and_outcomes, course_code)
             if back:
