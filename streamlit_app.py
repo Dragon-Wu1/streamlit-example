@@ -4,14 +4,14 @@ from PIL import Image
 import time
 import pandas as pd
 import time
+
 headerSection = st.container()
 mainSection = st.container()
 loginSection = st.container()
 logOutSection = st.container()
 FillSection = st.container()
-AddSection = st.container()
-SaveSection = st.container()
-InputSection = st.container()
+DataSection = st.container()
+
 st.markdown(
     """<style>
         button {
@@ -21,89 +21,76 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
+def data_click():
+    st.session_state['Fill'] = True
+    st.session_state['Data'] = False
+    
+    
 def init_connection():
     return snowflake.connector.connect(
         **st.secrets["snowflake"], client_session_keep_alive=True
     )
 
 
-def add_data(des, pre, tex, ref, maj, obj, cov, obo, csn, cona, courde):
-    use = st.session_state['User']
-    passw = st.session_state['Password']
-    email = st.session_state['Email']
-    st.markdown(f"""
-        Information：
-        - Instructor: {use}
-        - Password: {passw}
-        - Email: {email}
-        - Course Code : {csn}
-        - Course Name : {cona}
-        - Course Department : {courde}
-        - Description : {des}
-        - Prerequisites : {pre}
-        - Textbook : {tex}
-        - Reference : {ref}
-        - Major : {maj}
-        - Objectives : {obj}
-        - Covered : {cov}
-        - Objectives Outcomes : {obo}
-        """)
-    conn = init_connection()
-    cursor = conn.cursor()
-    left_column, right_column = st.columns([3, 1])   
-    with left_column:
-        add_back = st.button("Back", key='add_back')
-    with right_column:
-        add_confirm = st.button('Confirm', key='add_confirm')
-    if add_confirm:
-        sql1 = "INSERT INTO INSTRUCTORS (name, course, password, email) values ('%s', '%s', '%s', '%s')" % (use, csn, passw, email)
-        cursor.execute(sql1)
-        sql2 = "insert into course (id_name, course_name, course_dept, description, prerequisites, textbook, reference, major_pre, objectives, covered, objectives_outcomes) values ('%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (csn, cona, courde, des, pre, tex, ref, maj, obj, cov, obo)
-        cursor.execute(sql2)
-        conn.commit()
-        st.success("Adding is successfully")
-    if add_back:
-        st.session_state['ADD'] = True
+def show_input_page():
+    with DataSection:
+        if st.session_state['Data']:
+            st.markdown(f"\n"
+                        f"            Information：\n"
+                        f"            - Name : {st.session_state['csn']}\n"
+                        f"            - Description : {st.session_state['des']}\n"
+                        f"            - Prerequisites : {st.session_state['pre']}\n"
+                        f"            - Textbook : {st.session_state['tex']}\n"
+                        f"            - Reference : {st.session_state['ref']}\n"
+                        f"            - Major : {st.session_state['maj']}\n"
+                        f"            - Objectives : {st.session_state['obj']}\n"
+                        f"            - Covered : {st.session_state['cov']}\n"
+                        f"            - Objectives Outcomes : {st.session_state['obo']}\n"
+                        f"            ")
+            conn = init_connection()
+            cursor = conn.cursor()
+            sql = "UPDATE course SET description = '%s', prerequisites = '%s', textbook = '%s', reference = '%s', " \
+              "major_pre = " \
+              "'%s', objectives = '%s', covered = '%s', objectives_outcomes = '%s' WHERE id_name = '%s'" % (st.session_state['des'],
+                                                                                                            st.session_state['pre'],
+                                                                                                            st.session_state['tex'],
+                                                                                                            st.session_state['ref'], st.session_state['maj'],
+                                                                                                            st.session_state['obj'], st.session_state['cov'],
+                                                                                                            st.session_state['obo'], st.session_state['csn'])
+            cursor.execute(sql)
+            conn.commit()
+            left_column, right_column, outcol= st.columns([3, 1, 1])
+            with left_column:
+                back_save = st.button("Back", key='back_save', on_click=data_click)
+            with right_column:
+                confirm = st.button('Confirm')
+            with outcol:
+                st.button("Log Out", key="logout", on_click=LoggedOut_Clicked)
+            if confirm:
+                sql1 = "UPDATE course SET status = 'Finished' WHERE id_name = '%s'" % (st.session_state['csn'])
+                cursor.execute(sql1)
+                conn.commit()
+                st.success("Modifying is successfully")
 
 
-def inputdata(des, pre, tex, ref, maj, obj, cov, obo, csn):
-    st.markdown(f"""
-    Information：
-    - Name : {csn}
-    - Description : {des}
-    - Prerequisites : {pre}
-    - Textbook : {tex}
-    - Reference : {ref}
-    - Major : {maj}
-    - Objectives : {obj}
-    - Covered : {cov}
-    - Objectives Outcomes : {obo}
-    """)
+
+def read():
+    name = st.session_state['UserName']
     conn = init_connection()
     cursor = conn.cursor()
-    sql = "UPDATE course SET description = '%s', prerequisites = '%s', textbook = '%s', reference = '%s', major_pre = " \
-          "'%s', objectives = '%s', covered = '%s', objectives_outcomes = '%s' WHERE id_name = '%s'" % (des,
-                                                                                                            pre,
-                                                                                                            tex,
-                                                                                                            ref, maj,
-                                                                                                            obj, cov,
-                                                                                                            obo, csn)
+    sql = "Select id_name as Course_Code, course_name as Course_Name, course_dept as Course_Department, status as " \
+          "Course_Status from course M Join instructors F On M.id_name = F.course " \
+          "AND F.name = '%s'" % (
+              name)
     cursor.execute(sql)
     conn.commit()
-    left_column, right_column = st.columns([3, 1])   
-    with left_column:
-        back_save = st.button("Back", key='back_save')
-    with right_column:
-        confirm = st.button('Confirm')
-    if confirm:
-        sql1 = "UPDATE course SET status = 'Confirmed' WHERE id_name = '%s'" % (csn)
-        cursor.execute(sql1)
-        conn.commit()
-        st.success("Modifying is successfully")
-    if back_save:
-        st.session_state['Fill'] = True
+    df2 = pd.read_sql(sql, con=conn)  # it read the result as a dataframe very important
+    return df2
 
+
+def convert_tuple(tup):  # convert tuple to string
+    str = ''.join(tup)
+    return str
 
 
 def loading(code):
@@ -123,28 +110,15 @@ def convertTuple(tup):      #convert tuple to string
     return str
 
 
-def Read():
-    name = st.session_state['User']
-    conn = init_connection()
-    cursor = conn.cursor()
-    sql = "Select name, course , status from course M Join instructors F On M.id_name = F.course AND F.name = '%s'" % (
-        name)
-    cursor.execute(sql)
-    conn.commit()
-    df2 = pd.read_sql(sql, con=conn)  #it read the result as a dataframe very important
-    return df2
-
-
-def LoggedOut_Clicked():
-    st.session_state['loggedIn'] = False
-    del st.session_state['User']
-
-def show_logout_page():
-    loginSection.empty()
-    with logOutSection:
-        st.button("Log Out", key="logout", on_click=LoggedOut_Clicked)
-
-
+def show_login_page():
+    with loginSection:
+        st.title("User")
+        if st.session_state['loggedIn'] == False:
+            userName = st.text_input(label="", value="", placeholder="Enter your user name")
+            password = st.text_input(label="", value="", placeholder="Enter password", type="password")
+            st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
+            
+            
 def LoggedIn_Clicked(userName, password):
     conn = init_connection()
     cursor = conn.cursor()
@@ -160,216 +134,85 @@ def LoggedIn_Clicked(userName, password):
     if df2 is not None and df == password:
         st.session_state['loggedIn'] = True
         if 'User' not in st.session_state:
-            st.session_state['User'] = userName
+            st.session_state['UserName'] = userName
         if 'Password' not in st.session_state:
             st.session_state['Password'] = df
-        if 'Email' not in st.session_state:
-            st.session_state['Email'] = df2[4]
     else:
         st.session_state['loggedIn'] = False
         st.error("Invalid user name or password")
 
 
-def main_click(*cour):      #after click the button of main page
-    if 'Fill' not in st.session_state:
-        st.session_state['Fill'] = True
-    else:
-        st.session_state['Fill'] = True
+ef LoggedOut_Clicked():
+    #st.session_state['loggedIn'] = False
+    for key in st.session_state.keys():
+        del st.session_state[key]
+
+def show_logout_page():
+    loginSection.empty()
+    with logOutSection:
+        st.button("Log Out", key="logout", on_click=LoggedOut_Clicked)
+
+
+def main_click(*cour):
+    st.session_state['main'] = False
+    st.session_state['Fill'] = True
     if 'name' not in st.session_state:
-        st.session_state['name'] = convertTuple(cour)  #the paramater of course code and cour is a tuple
+        st.session_state['name'] = convert_tuple(cour)  # the paramater of course code and cour is a tuple
     else:
-        st.session_state['name'] = convertTuple(cour)
-    st.session_state['main'] = False
-    if 'ADD' not in st.session_state:
-        st.session_state['ADD'] = False
-    else:
-        st.session_state['ADD'] = False
-    if 'Choose' not in st.session_state:
-        st.session_state['Choose'] = True
-    else:
-        st.session_state['Choose'] = True
-
-
-def Main_Add_click():
-    st.session_state['main'] = False
-    if 'ADD' not in st.session_state:
-        st.session_state['ADD'] = True
-    else:
-        st.session_state['ADD'] = True
-    if 'Fill' not in st.session_state:
-        st.session_state['Fill'] = False
-    else:
-        st.session_state['Fill'] = False
-    if 'Choose' not in st.session_state:
-        st.session_state['Choose'] = False
-    else:
-        st.session_state['Choose'] = False
-
-
-def show_Input_page():
-    with InputSection:
-        if st.session_state['ADD'] == False:
-            add_data(st.session_state['des'], st.session_state['pre'], st.session_state['tex'], st.session_state['ref'], st.session_state['maj'], st.session_state['obj'], st.session_state['cov'], st.session_state['obo'], st.session_state['csn'], st.session_state['cona'], st.session_state['courde'])
-
-
-def show_Save_page():
-    with SaveSection:
-        if st.session_state['Fill'] == False:
-            inputdata(st.session_state['des'], st.session_state['pre'], st.session_state['tex'], st.session_state['ref'], st.session_state['maj'], st.session_state['obj'], st.session_state['cov'], st.session_state['obo'], st.session_state['csn'])
-
-
-def Add_click(des, pre, tex, ref, maj, obj, cov, obo, csn, cona, courde):
-    st.session_state['ADD'] = False
-    if 'des' not in st.session_state:
-        st.session_state['des'] = des
-    else:
-        st.session_state['des'] = des
-    if 'pre' not in st.session_state:
-        st.session_state['pre'] = pre
-    else:
-        st.session_state['pre'] = pre
-    if 'tex' not in st.session_state:
-        st.session_state['tex'] = tex
-    else:
-        st.session_state['tex'] = tex
-    if 'ref' not in st.session_state:
-        st.session_state['ref'] = ref
-    else:
-        st.session_state['ref'] = ref
-    if 'maj' not in st.session_state:
-        st.session_state['maj'] = maj
-    else:
-        st.session_state['maj'] = maj
-    if 'obj' not in st.session_state:
-        st.session_state['obj'] = obj
-    else:
-        st.session_state['obj'] = obj
-    if 'cov' not in st.session_state:
-        st.session_state['cov'] = cov
-    else:
-        st.session_state['cov'] = cov
-    if 'obo' not in st.session_state:
-        st.session_state['obo'] = obo
-    else:
-        st.session_state['obo'] = obo
-    if 'csn' not in st.session_state:
-        st.session_state['csn'] = csn
-    else:
-        st.session_state['csn'] = csn
-    if 'cona' not in st.session_state:
-        st.session_state['cona'] = cona
-    else:
-        st.session_state['cona'] = cona
-    if 'courde' not in st.session_state:
-        st.session_state['courde'] = courde
-    else:
-        st.session_state['courde'] = courde
-
-
-def Fill_click(des, pre, tex, ref, maj, obj, cov, obo, csn):
+        st.session_state['name'] = convert_tuple(cour)
+        
+        
+def fill_click1(*ll):
     st.session_state['Fill'] = False
+    st.session_state['Data'] = True
     if 'des' not in st.session_state:
-        st.session_state['des'] = des
+        st.session_state['des'] = ll[0]
     else:
-        st.session_state['des'] = des
+        st.session_state['des'] = ll[0]
     if 'pre' not in st.session_state:
-        st.session_state['pre'] = pre
+        st.session_state['pre'] = ll[1]
     else:
-        st.session_state['pre'] = pre
+        st.session_state['pre'] = ll[1]
     if 'tex' not in st.session_state:
-        st.session_state['tex'] = tex
+        st.session_state['tex'] = ll[2]
     else:
-        st.session_state['tex'] = tex
+        st.session_state['tex'] = ll[2]
     if 'ref' not in st.session_state:
-        st.session_state['ref'] = ref
+        st.session_state['ref'] = ll[3]
     else:
-        st.session_state['ref'] = ref
+        st.session_state['ref'] = ll[3]
     if 'maj' not in st.session_state:
-        st.session_state['maj'] = maj
+        st.session_state['maj'] = ll[4]
     else:
-        st.session_state['maj'] = maj
+        st.session_state['maj'] = ll[4]
     if 'obj' not in st.session_state:
-        st.session_state['obj'] = obj
+        st.session_state['obj'] = ll[5]
     else:
-        st.session_state['obj'] = obj
+        st.session_state['obj'] = ll[5]
     if 'cov' not in st.session_state:
-        st.session_state['cov'] = cov
+        st.session_state['cov'] = ll[6]
     else:
-        st.session_state['cov'] = cov
+        st.session_state['cov'] = ll[6]
     if 'obo' not in st.session_state:
-        st.session_state['obo'] = obo
+        st.session_state['obo'] = ll[7]
     else:
-        st.session_state['obo'] = obo
+        st.session_state['obo'] = ll[7]
     if 'csn' not in st.session_state:
-        st.session_state['csn'] = csn
+        st.session_state['csn'] = ll[8]
     else:
-        st.session_state['csn'] = csn
+        st.session_state['csn'] = ll[8]
 
-
-def show_Add_page():
-    if st.session_state['main'] == False and st.session_state['ADD'] == True and st.session_state['Choose'] == False:
-        with AddSection:
-            st.title('Filled the information in below.')
-            course_code = st.text_input("Course Code")
-            course_name = st.text_input("Course Name")
-            course_dept = st.text_input("Course Department")
-            catalog_description = st.text_area("Catalog Description")
-            prerequisites = st.text_area("Prerequisites")
-            textbook = st.text_area("Textbook(s) and other required materia")
-            references = st.text_area("References")
-            major_prerequisites_by_topic = st.text_area("Major prerequisites by topic")
-            course_objectives = st.text_area("Course objectives")
-            topics_covered = st.text_area("Topics covered")
-            objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
-            left_column, right_column = st.columns([3, 1])
-            with left_column:
-                turn_back = st.button("Back", key='turn_back')
-            with right_column:
-                submit = st.button("Save", key='add_submit')                
-            if submit:
-                Add_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,
-                           course_objectives, topics_covered, objectives_and_outcomes, course_code, course_name, course_dept)
-            if turn_back:
-                st.session_state['main'] = True
-
-
-def show_login_page():
-    with loginSection:
-        st.title("User")
-        if st.session_state['loggedIn'] == False:
-            userName = st.text_input(label="", value="", placeholder="Enter your user name")
-            password = st.text_input(label="", value="", placeholder="Enter password", type="password")
-            st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
-
-
-def show_main_page():
-    with mainSection:
-        st.title('Please select the course to modify')
-        df2 = Read()   #return is tuples
-        #left_column, right_column = st.columns([3, 1])
-        st.table(df2)
-        #with left_column:
-            #st.table(df2)
-        #with right_column:
-            #st.write('Option')
-            #for i, j in zip(df2.COURSE, df2.STATUS):    #i is string
-                #i = st.button(j, key=i, on_click=main_click, args=i)
-        select_course=st.selectbox('Select the course to modify',df2.COURSE)
-        i = st.button('Modify', key='i', on_click=main_click, args=select_course)
-        add = st.button('add', on_click=Main_Add_click)      #st.session_state['User']    
-        show_logout_page()
-
-
-def show_Fill_page():
-    if st.session_state['main'] == False and st.session_state['Fill'] == True and st.session_state['Choose'] == True:
+def fill_click2():
+    st.session_state['Fill'] = False
+    st.session_state['main'] = True
+    
+def show_fill_page():
+    if st.session_state['main'] == False and st.session_state['Fill'] == True:
         with FillSection:
             st.title('Filled the information in below.')
             course_code = st.session_state['name']
             df = loading(course_code)
-            #st.write(df[0])
             df1 = df[0]
-            #st.write(df1[0])
-            #st.write(df1[1])
             if df1[4] != None:
                 catalog_description = st.text_area("Catalog Description", df1[4])
             else:
@@ -406,50 +249,54 @@ def show_Fill_page():
                 topics_covered = st.text_area("Topics covered")
 
             if df1[11] != None:
-                objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes", df1[11])
+                objectives_and_outcomes = st.text_area(
+                    "Relationship to CEE, EEE and EME program objectives and outcomes", df1[11])
             else:
-                objectives_and_outcomes = st.text_area("Relationship to CEE, EEE and EME program objectives and outcomes")
-            left_column, right_column = st.columns([3, 1])
+                objectives_and_outcomes = st.text_area(
+                    "Relationship to CEE, EEE and EME program objectives and outcomes")
+            left_column, right_column, outcol1 = st.columns([3, 1, 1])
             with left_column:
-                back = st.button("Back")
+                back = st.button("Back", on_click=fill_click2)
             with right_column:
-                sub_mit = st.button("Save")
-            if sub_mit:
-                Fill_click(catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic,course_objectives, topics_covered, objectives_and_outcomes, course_code)
-            if back:
-                st.session_state['main'] = True
+                list123 = [catalog_description, prerequisites, textbook, references, major_prerequisites_by_topic, course_objectives, topics_covered, objectives_and_outcomes, course_code]
+                sub_mit = st.button("Save", on_click=fill_click1, args=list123)
+            with outcol1:
+                st.button("Log Out", key="logout", on_click=LoggedOut_Clicked)
+
+
+def show_main_page():
+    if st.session_state['main']:
+        with mainSection:
+            st.title('WELCOME TO ' + st.session_state['UserName'] + '!')
+            df2 = read()  # return is tuples
+            st.table(df2)
+            select_course = st.selectbox('Select the course to modify', df2.Course_Code)
+            i = st.button('Modify', key='i', on_click=main_click, args=select_course)
 
 
 with headerSection:
+    conn = init_connection()
+    cursor = conn.cursor()
+    #st.write(1)
     if 'loggedIn' not in st.session_state:
         st.session_state['loggedIn'] = False
-        show_login_page()   #st.session_state['loggedIn'] = True
+        show_login_page()
     else:
+        # st.write(2)
         if st.session_state['loggedIn']:
-              #st.session_state['loggedIn'] = True,if lock out click,then st.session_state['loggedIn']=false
             if 'main' not in st.session_state:
                 st.session_state['main'] = True
-                #st.write(1)
-                show_main_page()  #st.session_state['main'] = True,after click st.session_state['main'] = False
-                #st.write(2)
+                if 'Fill' not in st.session_state:
+                    st.session_state['Fill'] = False
+                if 'Data' not in st.session_state:
+                    st.session_state['Data'] = False
+                # st.write(3)
+                show_main_page()  # main false,fill true
             else:
-                if st.session_state['main'] == True:
-                    #st.write(3)
-                    show_main_page()        #st.session_state['main'] is exit and == True,when it press button,the st.session_state['main'] =False
-                    #st.write(4)
-                else:           # st.session_state['main'] is exit and == False
-                    if st.session_state['Fill']:
-                        #st.write(5)
-                        show_Fill_page()  #st.session_state['main'] is false and Fill is exit and is True
-                        #st.write(6)
-                    elif st.session_state['Fill'] == False and st.session_state['Choose'] == True:
-                        #st.write(7)
-                        show_Save_page() #st.session_state['main'] is false and Fill is exit and is False
-                        #st.write(8)
-                    elif st.session_state['ADD']:
-                        show_Add_page()
-                    elif st.session_state['ADD'] == False and st.session_state['Choose'] == False:
-                        show_Input_page()
+                # st.write(4)
+                show_main_page()
+                # st.write(5)
+                show_fill_page()
+                show_input_page()
         else:
             show_login_page()
-
