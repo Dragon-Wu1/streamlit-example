@@ -126,14 +126,14 @@ def LoggedIn_Clicked(userName, password):
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
-
+    pa = password
     #st.write(df2[3])
     #st.write(type(df2[3]))
-    st.write(password)
-    st.write(type(password))
+    st.write(pa)
+    st.write(type(pa))
     df = str(df2[3])
     #password = int(password) #as password is a string and df2 is tuple
-    if df2 is not None and df == password:
+    if df2 is not None and df == pa:
         st.session_state['loggedIn'] = True
         if 'User' not in st.session_state:
             st.session_state['UserName'] = userName
