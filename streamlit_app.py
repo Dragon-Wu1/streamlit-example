@@ -127,6 +127,7 @@ def LoggedIn_Clicked(userName, password):
     conn.commit()
     df2 = cursor.fetchone()
     st.write(password)
+    st.write(type(password))
     df = int(df2[3])
     #password = int(password) #as password is a string and df2 is tuple
     if df2 is not None and df == password:
