@@ -126,8 +126,8 @@ def LoggedIn_Clicked(userName, password):
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
-    st.write(password)
-    st.write(type(password))
+    #st.write(password)
+    #st.write(type(password))
     df = str(df2[3])
     #password = int(password) #as password is a string and df2 is tuple
     if df2 is not None and df == password:
@@ -269,7 +269,7 @@ def show_main_page():
             st.title('WELCOME TO ' + st.session_state['UserName'] + '!')
             df2 = read()  # return is tuples
             st.table(df2)
-            select_course = st.selectbox('Select the course to modify', df2.Course_Code)
+            select_course = st.selectbox('Select the course to modify', df2.COURSE_CODE)
             i = st.button('Modify', key='i', on_click=main_click, args=select_course)
 
 
