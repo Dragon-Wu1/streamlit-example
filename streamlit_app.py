@@ -142,7 +142,7 @@ def LoggedIn_Clicked(userName, password):
         st.error("Invalid user name or password")
 
 
-ef LoggedOut_Clicked():
+def LoggedOut_Clicked():
     #st.session_state['loggedIn'] = False
     for key in st.session_state.keys():
         del st.session_state[key]
