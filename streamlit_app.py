@@ -111,7 +111,8 @@ def convertTuple(tup):      #convert tuple to string
 
 def show_login_page():
     with loginSection:
-        st.title("User")
+        st.title("Course Information Management System")
+        st.subheader("User")
         if st.session_state['loggedIn'] == False:
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
             password = st.text_input(label="", value="", placeholder="Enter password", type="password")
