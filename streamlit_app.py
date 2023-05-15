@@ -131,7 +131,7 @@ def LoggedIn_Clicked(userName, password):
     #st.write(type(df2[3]))
     st.write(password)
     st.write(type(password))
-    df = df2[3]
+    df = str(df2[3])
     password = int(password) #as password is a string and df2 is tuple
     if df2 is not None and df == password:
         st.session_state['loggedIn'] = True
