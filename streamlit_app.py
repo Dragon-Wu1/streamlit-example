@@ -3,7 +3,6 @@ import snowflake.connector
 from PIL import Image
 import time
 import pandas as pd
-import time
 
 headerSection = st.container()
 mainSection = st.container()
@@ -120,8 +119,9 @@ def show_login_page():
             
         
 def LoggedIn_Clicked(userName, password):
+    time.sleep(3)
     st.write(userName)
-    st.write(int(password))
+    st.write(password)
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select * from instructors Where name = '%s';" % (userName)
