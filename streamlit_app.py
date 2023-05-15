@@ -119,7 +119,6 @@ def show_login_page():
             
         
 def LoggedIn_Clicked(userName, password):
-    time.sleep(3)
     st.write(userName)
     st.write(password)
     conn = init_connection()
