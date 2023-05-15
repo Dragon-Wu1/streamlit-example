@@ -115,13 +115,13 @@ def show_login_page():
         st.title("User")
         if st.session_state['loggedIn'] == False:
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
-            password = st.number_input(label="Enter password")
+            userName = st.text_input(label="", value="", placeholder="Enter password")
             st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
             
-
-    
-    
+        
 def LoggedIn_Clicked(userName, password):
+    st.write(userName)
+    st.write(password)
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select * from instructors Where name = '%s';" % (userName)
