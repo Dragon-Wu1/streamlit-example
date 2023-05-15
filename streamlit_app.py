@@ -126,7 +126,7 @@ def LoggedIn_Clicked(userName, password):
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
-    st.write(password)
+    #st.write(password)
     #st.write(type(password))
     #password = password
     df = str(df2[3])
