@@ -119,8 +119,8 @@ def show_login_page():
             
         
 def LoggedIn_Clicked(userName, password):
-    st.write(userName)
-    st.write(password)
+    #st.write(userName)
+    #st.write(password)
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select * from instructors Where name = '%s';" % (userName)
