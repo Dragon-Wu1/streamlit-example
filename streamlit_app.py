@@ -116,18 +116,27 @@ def show_login_page():
         if st.session_state['loggedIn'] == False:
             userName = st.text_input(label="", value="", placeholder="Enter your user name")
             password = st.text_input(label="", value="", placeholder="Enter password", type="password")
-            st.button("Login", on_click=LoggedIn_Clicked, args=(userName, password))
+            st.button("Login", on_click=loo, args=(userName, password))
             
-            
-def LoggedIn_Clicked(userName, password):
+
+def loo(userName, password):
+    if 'Pas' not in st.session_state:
+            st.session_state['Pas'] = password
+    else:
+            st.session_state['Pas'] = password
+    LoggedIn_Clicked(userName)
+    
+    
+def LoggedIn_Clicked(userName):
     conn = init_connection()
     cursor = conn.cursor()
     sql = "Select * from instructors Where name = '%s';" % (userName)
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
-    #st.write(password)
-    #st.write(type(password))
+    password = st.session_state['Pas']
+    st.write(password)
+    st.write(type(password))
     #password = password
     df = str(df2[3])
     #password = int(password) #as password is a string and df2 is tuple
