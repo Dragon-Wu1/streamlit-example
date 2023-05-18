@@ -34,18 +34,12 @@ def init_connection():
 def show_input_page():
     with DataSection:
         if st.session_state['Data']:
-            st.markdown(f"\n"
-                        f"            Information：\n"
-                        f"            - Name : {st.session_state['csn']}\n"
-                        f"            - Description : {st.session_state['des']}\n"
-                        f"            - Prerequisites : {st.session_state['pre']}\n"
-                        f"            - Textbook : {st.session_state['tex']}\n"
-                        f"            - Reference : {st.session_state['ref']}\n"
-                        f"            - Major : {st.session_state['maj']}\n"
-                        f"            - Objectives : {st.session_state['obj']}\n"
-                        f"            - Covered : {st.session_state['cov']}\n"
-                        f"            - Objectives Outcomes : {st.session_state['obo']}\n"
-                        f"            ")
+            list1 = ['Course Name', 'Description', 'Prerequisites', 'Textbook', 'Reference', 'Major', 'Objectives', 'Covered', 'Objectives Outcomes']
+            list2 = [st.session_state['csn'], st.session_state['des'], st.session_state['pre'], st.session_state['tex'], st.session_state['ref'], st.session_state['maj'], st.session_state['obj'], st.session_state['cov'], st.session_state['obo']]
+            l1 = {list2[1]: list2}
+            df = pd.DataFrame(l1, index=list1)
+            st.subheader(list2[1])
+            st.table(df)    
             conn = init_connection()
             cursor = conn.cursor()
             sql = "UPDATE course SET description = '%s', prerequisites = '%s', textbook = '%s', reference = '%s', " \
@@ -128,7 +122,7 @@ def LoggedIn_Clicked(userName, password):
     cursor.execute(sql)
     conn.commit()
     df2 = cursor.fetchone()
-    df = df2[3]
+    df = df2[4]
     password = int(password) #as password is a string and df2 is tuple
     if df2 is not None and df == password:
         st.session_state['loggedIn'] = True
