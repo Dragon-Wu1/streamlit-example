@@ -11,12 +11,12 @@ forums](https://discuss.streamlit.io).
  when log in,for input the password,it need to press enter to confirm the password after input the password.
  This is an link to enter to the front end(https://dragon-wu1-streamlit-example-streamlit-app-w04axx.streamlit.app/)
 # For log in
- admin name:Norman ;
- admin password:13000
+ user name:Norman ;
+ user password:13000
 # 
 # 2) is directly run the program in python
  run the front.py and install the package from requirement.txt
  when log in,for input the password,it need to press enter to confirm the password after input the password.
  # For log in
- admin name:Norman ;
- admin password:13000
+ user name:Norman ;
+ user password:13000
